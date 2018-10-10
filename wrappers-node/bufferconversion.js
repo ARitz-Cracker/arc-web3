@@ -28,10 +28,10 @@ exports.stringToHex = function(str,append0x){
 	return (append0x === false ? "":"0x")+Buffer.from(str,"utf8").toString("hex");
 }
 
-exports.newBuffer = function(len){
-	return Buffer.alloc(len);
-}
+exports.newBuffer = Buffer.alloc;
 
-exports.newBufferUnsafe = function(len){
-	return Buffer.allocUnsafe(len);
-}
+exports.newBufferUnsafe = Buffer.allocUnsafe;
+
+exports.concat = Buffer.concat;
+
+exports.from = Buffer.from;

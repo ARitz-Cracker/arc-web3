@@ -8,7 +8,7 @@ const handlers = {
 }
 
 
-class JSONRPCer {
+class HTTPJSONRPCer {
 	constructor(url){
 		let parsedData = new URL(url);
 		this.h = handlers[parsedData.protocol];
@@ -22,7 +22,7 @@ class JSONRPCer {
 			path: parsedData.pathname,
 			method: "POST",
 			headers: {
-				'User-Agent' : "NodeJS/"+process.version.substr(1)+" (arc-web3.js/0.0.0)"
+				'User-Agent' : "NodeJS/"+process.version.substr(1)+" (arc-web3.js/0.7.0d)"
 			}
 		};
 		if (parsedData.username){
@@ -56,7 +56,7 @@ class JSONRPCer {
 								buff = Buffer.concat(buff, i);
 							}else{
 								if (i != buff.length){
-									throw new Web3ConnectionError("Server lied about it's response length. ("+i+" != "+buff.length+")");
+									throw new Web3ConnectionError("Server lied about it's response length. ("+i+" != "+buff.length+")",-32700);
 								}
 							}
 
@@ -89,7 +89,9 @@ class JSONRPCer {
 					reject(new Web3ConnectionError("HTTP status code: "+res.statusCode+" "+res.statusMessage,res.statusCode,url));
 			}
 			});
-			req.on("error",reject);
+			req.on("error",function(ex){
+				reject(new Web3ConnectionError("Unable to connect",-1,ex.name+": "+ex.message));
+			});
 			let body = Buffer.from(JSON.stringify({
 				jsonrpc:"2.0",
 				method:method,
@@ -105,6 +107,6 @@ class JSONRPCer {
 }
 
 module.exports = {
-	JSONRPCer:JSONRPCer
+	HTTPJSONRPCer
 };
 

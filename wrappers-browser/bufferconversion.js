@@ -99,3 +99,26 @@ exports.newBuffer = function(len){
 exports.newBufferUnsafe = function(len){
 	return new Uint8Array(len);
 }
+
+exports.from = function(stuff){
+	return new Uint8Array(stuff);
+}
+
+exports.concat = function(buffers,len){
+	if (buffers.length == 0){
+		return new Uint8Array(0);
+	}
+	if (len == null){
+		len = 0;
+		for (let i=0;i<buffers.length;i+=1){
+			len += buffers[i].length;
+		}
+	}
+	let result = new Uint8Array(len);
+	let currentIndex = 0
+	for (let i=0;i<buffers.length;i+=1){
+		result.set(buffers[i].length,currentIndex);
+		currentIndex += buffers[i].length;
+	}
+	return result;
+}

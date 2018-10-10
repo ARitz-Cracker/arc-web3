@@ -5,7 +5,8 @@ const keccak256 = require('js-sha3').keccak256;
 let f = (async function(){
 	try{
 		//let web3 = new Web3Connection("http://192.168.5.5/eth/");
-		let web3 = new Web3Connection("http://192.168.5.5:8545");
+		//let web3 = new Web3Connection("http://192.168.5.5:8545");
+		let web3 = new Web3Connection("ws://192.168.5.5:8546");
 		console.log("-------clientVersion");
 		console.log(await web3.clientVersion());
 		let data = Buffer.from("Hello world!");
@@ -68,7 +69,7 @@ let f = (async function(){
 			data:"0x91c05b0b0000000000000000000000000000000000000000000000000000000000000539"
 		},"latest"]));
 		*/
-		
+		web3.closeConnection();
 	}catch(ex){
 		console.log(ex.stack);
 	}
