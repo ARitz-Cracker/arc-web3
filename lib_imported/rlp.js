@@ -3,10 +3,10 @@
  * Imported from https://github.com/ethereumjs/rlp/blob/5849c7b8d19458cb2e591ce6ee303e45e4756f5d/index.js
  * Copyright © 2014-2018 wanderer (https://github.com/wanderer); Carey Janecka (https://github.com/figitaki); Jaco Greeff; https://github.com/jacogr
  * This file is Used, modified, and redistributed under the terms defined in the "Mozilla Public License 2.0" Lisence. Visit https://github.com/ethereumjs/rlp/blob/5849c7b8d19458cb2e591ce6ee303e45e4756f5d/LICENSE to obtain a copy of this lisence.
-*/
-
-const assert = require('assert')
-const Buffer = require('safe-buffer').Buffer
+ */
+const BigNumber = require("bignumber.js");
+const BufferLib = require("../wrappers-node/bufferconversion.js");
+ 
 /**
  * RLP Encoding based on: https://github.com/ethereum/wiki/wiki/%5BEnglish%5D-RLP
  * This function takes in a data, convert it to buffer if not, and a length for recursion
@@ -20,14 +20,14 @@ exports.encode = function (input) {
 		for (var i = 0; i < input.length; i++) {
 			output.push(exports.encode(input[i]))
 		}
-		var buf = Buffer.concat(output)
-		return Buffer.concat([encodeLength(buf.length, 192), buf])
+		var buf = BufferLib.concat(output)
+		return BufferLib.concat([encodeLength(buf.length, 192), buf])
 	} else {
 		input = toBuffer(input)
 		if (input.length === 1 && input[0] < 128) {
 			return input
 		} else {
-			return Buffer.concat([encodeLength(input.length, 128), input])
+			return BufferLib.concat([encodeLength(input.length, 128), input])
 		}
 	}
 }
@@ -42,12 +42,12 @@ function safeParseInt (v, base) {
 
 function encodeLength (len, offset) {
 	if (len < 56) {
-		return Buffer.from([len + offset])
+		return BufferLib.from([len + offset])
 	} else {
 		var hexLength = intToHex(len)
 		var lLength = hexLength.length / 2
 		var firstByte = intToHex(offset + 55 + lLength)
-		return Buffer.from(firstByte + hexLength, 'hex')
+		return BufferLib.hexToBuffer(firstByte + hexLength,false);
 	}
 }
 
@@ -58,7 +58,7 @@ function encodeLength (len, offset) {
  **/
 exports.decode = function (input, stream) {
 	if (!input || input.length === 0) {
-		return Buffer.from([])
+		return BufferLib.newBufferUnsafe(0);
 	}
 
 	input = toBuffer(input)
@@ -68,13 +68,15 @@ exports.decode = function (input, stream) {
 		return decoded
 	}
 
-	assert.equal(decoded.remainder.length, 0, 'invalid remainder')
+	if (decoded.remainder.length !== 0){
+		throw new Error("invalid remainder");
+	}
 	return decoded.data
 }
 
 exports.getLength = function (input) {
 	if (!input || input.length === 0) {
-		return Buffer.from([])
+		return BufferLib.newBufferUnsafe(0);
 	}
 
 	input = toBuffer(input)
@@ -114,7 +116,7 @@ function _decode (input) {
 
 		// set 0x80 null to 0
 		if (firstByte === 0x80) {
-			data = Buffer.from([])
+			data = BufferLib.newBufferUnsafe(0);
 		} else {
 			data = input.slice(1, length)
 		}
@@ -183,14 +185,6 @@ function isHexPrefixed (str) {
 	return str.slice(0, 2) === '0x'
 }
 
-// Removes 0x from a given String
-function stripHexPrefix (str) {
-	if (typeof str !== 'string') {
-		return str
-	}
-	return isHexPrefixed(str) ? str.slice(2) : str
-}
-
 function intToHex (i) {
 	var hex = i.toString(16)
 	if (hex.length % 2) {
@@ -207,33 +201,40 @@ function padToEven (a) {
 
 function intToBuffer (i) {
 	var hex = intToHex(i)
-	return Buffer.from(hex, 'hex')
+	return BufferLib.hexToBuffer(hex,false);
 }
 
 function toBuffer (v) {
-	if (!Buffer.isBuffer(v)) {
+	if (!(v instanceof Uint8Array)) {
 		if (typeof v === 'string') {
 			if (isHexPrefixed(v)) {
-				v = Buffer.from(padToEven(stripHexPrefix(v)), 'hex')
+				v = BufferLib.hexToBuffer(v);
 			} else {
-				v = Buffer.from(v)
+				v = BufferLib.stringToBuffer(v);
 			}
 		} else if (typeof v === 'number') {
 			if (!v) {
-				v = Buffer.from([])
+				v = BufferLib.newBufferUnsafe(0);
 			} else {
 				v = intToBuffer(v)
 			}
 		} else if (v === null || v === undefined) {
-			v = Buffer.from([])
+			v = BufferLib.newBufferUnsafe(0);
+		/*
 		} else if (v.toArray) {
 			// converts a BN to a Buffer
 			v = Buffer.from(v.toArray())
-		} else if (v instanceof Uint8Array) {
-			v = Buffer.from(v)
+		*/
+		} else if (BigNumber.isBigNumber(v)) {
+			if (v.isZero()) {
+				v = BufferLib.newBufferUnsafe(0);
+			} else {
+				v = intToBuffer(v)
+			}
 		} else {
 			throw new Error('invalid type')
 		}
 	}
 	return v
 }
+
