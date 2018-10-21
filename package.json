@@ -2,20 +2,31 @@
 	"name": "arc-web3",
 	"version": "0.7.0d",
 	"description": "A re-imagination of the web3.js library to easily connect browsers and NodeJS to the Ethereum network with the goals of minimal overhead or boilerplate.",
-	"keywords": ["ethereum","ether","eth","web3","web3js","web3.js"],
+	"keywords": [
+		"ethereum",
+		"ether",
+		"eth",
+		"web3",
+		"web3js",
+		"web3.js"
+	],
 	"homepage": "https://github.com/ARitz-Cracker/arc-web3#readme",
 	"bugs": {
 		"url": "https://github.com/ARitz-Cracker/arc-web3/issues"
 	},
-	"license" : "CC-BY-SA-4.0",
+	"license": "CC-BY-SA-4.0",
 	"author": "Aritz Beobide-Cardinal <aritz@aritzcracker.ca>",
 	"main": "index.js",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/ARitz-Cracker/arc-web3.git"
 	},
-	"dependencies":{
+	"dependencies": {
+		"bignumber.js": "^7.2.1",
 		"js-sha3": "^0.7.0",
-		"bignumber.js": "^7.2.1"
+		"arc-bufferlib":"0.9.0"
+	},
+	"peerDependencies": {
+		"ws": "^6.1.0"
 	}
 }
