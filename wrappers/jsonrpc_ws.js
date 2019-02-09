@@ -1,6 +1,6 @@
 const {Web3ConnectionError, Web3APIError} = require("../lib/errors.js");
 let WS;
-if (typeof WebSocket == "undefined"){
+if (typeof WebSocket === "undefined"){
 	try{
 		WS = require('ws');
 	}catch(ex){
@@ -40,7 +40,7 @@ class WSJSONRPCer {
 	}
 	_socketClosed(closeCode){
 		if (this._reqParams != null){
-			this._reqReject(new Web3ConnectionError("Connection lost",-1,"Websocket connection code: "+e.code));
+			this._reqReject(new Web3ConnectionError("Connection lost",-1,"Websocket connection code: "+closeCode));
 			this._reqParams = null;
 		}
 	}

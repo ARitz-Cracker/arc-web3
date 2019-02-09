@@ -22,7 +22,7 @@ class HTTPJSONRPCer {
 			path: parsedData.pathname,
 			method: "POST",
 			headers: {
-				'User-Agent' : "NodeJS/"+process.version.substr(1)+" (arc-web3.js/0.7.0d)"
+				'User-Agent' : "NodeJS/"+process.version.substr(1)+" (arc-web3.js/0.7.3)"
 			}
 		};
 		if (parsedData.username){
