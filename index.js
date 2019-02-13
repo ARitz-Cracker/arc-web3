@@ -57,8 +57,12 @@ if (!signableAccountsInstalled){
 		//arc-web3-signable-accounts or its dependenices are not installed.
 	}
 }
+let promise;
 module.exports.InitializeWeb3 = function(){
-	await Promise.all(initFunctions.map((v) => {
-		return v();
-	}));
+	if (promise === undefined){
+		promise = Promise.all(initFunctions.map((v) => {
+			return v();
+		}));
+	}
+	return promise;
 }
