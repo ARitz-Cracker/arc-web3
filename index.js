@@ -42,19 +42,34 @@ try{
 	});
 	signableAccountsInstalled = true;
 }catch(ex){
-	//arc-web3-keyring or its dependenices are not installed.
+	const keyRingError = {
+		get: function(){
+			throw new Error("arc-web3-keyring isn't installed");
+		}
+	}
+	Object.defineProperty(module.exports, "EthereumAccountKeyring", keyRingError);
+	Object.defineProperties(module.exports.util, {
+		bip39: keyRingError,
+		HDKey: keyRingError
+	});
 }
 
 if (!signableAccountsInstalled){
 	try{
 		const {EthereumAccountSignable, InitializeEthereumAccountSignable, rlp} = require("arc-web3-signable-accounts");
 		module.exports.EthereumAccountSignable = EthereumAccountSignable;
-		module.exports.rlp = rlp;
+		module.exports.util.rlp = rlp;
 		initFunctions.push(async () => {
 			return InitializeEthereumAccountSignable(require("bitcoin-ts").instantiateSecp256k1());
 		});
 	}catch(ex){
-		//arc-web3-signable-accounts or its dependenices are not installed.
+		const accountsError = {
+			get: function(){
+				throw new Error("arc-web3-signable-accounts isn't installed");
+			}
+		}
+		Object.defineProperty(module.exports, "EthereumAccountSignable", accountsError);
+		Object.defineProperty(module.exports.util, "rlp", accountsError);
 	}
 }
 let promise;
