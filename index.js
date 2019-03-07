@@ -1,4 +1,4 @@
-const {EthereumAccount} = require("./lib/account.js");
+const {EthereumAccount, InitializeEthereumAccountVerifiable} = require("./lib/account.js");
 const {EthereumContractFunction, EthereumContractMultiFunction, EthereumContract, EthereumContractResult} = require("./lib/smartContract.js");
 const {Web3Connection} = require("./lib/web3Connection.js");
 const encodeABI = require("./lib/ABIDecoder.js").decode;
@@ -35,11 +35,16 @@ try{
 	module.exports.rlp = rlp;
 	module.exports.bip39 = bip39;
 	module.exports.HDKey = HDKey;
+	const bts = require("bitcoin-ts");
+	const secp256k1 = bts.instantiateSecp256k1();
 	initFunctions.push(async () => {
-		const bts = require("bitcoin-ts");
 		// Oh god look how ugly this is.
-		return InitializeEthereumAccountKeyring(bts.instantiateSha256(), bts.instantiateSecp256k1(), require("pbkdf2-wasm").instantiatePbkdf2(bts.instantiateSha512()));
+		return InitializeEthereumAccountKeyring(bts.instantiateSha256(), secp256k1, require("pbkdf2-wasm").instantiatePbkdf2(bts.instantiateSha512()));
 	});
+	initFunctions.push(async () => {
+		return InitializeEthereumAccountVerifiable(secp256k1);
+	});
+	
 	signableAccountsInstalled = true;
 }catch(ex){
 	const keyRingError = {
@@ -59,8 +64,12 @@ if (!signableAccountsInstalled){
 		const {EthereumAccountSignable, InitializeEthereumAccountSignable, rlp} = require("arc-web3-signable-accounts");
 		module.exports.EthereumAccountSignable = EthereumAccountSignable;
 		module.exports.util.rlp = rlp;
+		const secp256k1 = require("bitcoin-ts").instantiateSecp256k1();
 		initFunctions.push(async () => {
-			return InitializeEthereumAccountSignable(require("bitcoin-ts").instantiateSecp256k1());
+			return InitializeEthereumAccountSignable(secp256k1);
+		});
+		initFunctions.push(async () => {
+			return InitializeEthereumAccountVerifiable(secp256k1);
 		});
 	}catch(ex){
 		const accountsError = {
