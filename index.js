@@ -6,13 +6,20 @@ const decodeABI = require("./lib/ABIEncoder.js").encode;
 const {toChecksumAddress, isValidAddress} = require("./lib/ethAddressChecksum");
 const {Web3ConnectionError, Web3APIError, EthereumContractRevertError, EthereumABIParseError} = require("./lib/errors.js");
 const BigNumber = require("./lib/bignumber.js");
+const {InitializeKeccak, Keccak, keccak224, keccak256, keccak384, keccak512} = require("keccak-wasm");
 const util = {
 	encodeABI,
 	decodeABI,
 	toChecksumAddress,
-	isValidAddress
+	isValidAddress,
+	keccak224,
+	keccak256,
+	keccak384,
+	keccak512
 };
-let initFunctions = [];
+let initFunctions = [() => {
+	return InitializeKeccak();
+}];
 module.exports = {
 	util,
 	BigNumber,
@@ -25,7 +32,8 @@ module.exports = {
 	EthereumContractMultiFunction,
 	EthereumContract,
 	EthereumContractResult,
-	Web3Connection
+	Web3Connection,
+	Keccak
 }
 let signableAccountsInstalled = false;
 try{
@@ -37,11 +45,11 @@ try{
 	module.exports.HDKey = HDKey;
 	const bts = require("bitcoin-ts");
 	const secp256k1 = bts.instantiateSecp256k1();
-	initFunctions.push(async () => {
+	initFunctions.push(() => {
 		// Oh god look how ugly this is.
 		return InitializeEthereumAccountKeyring(bts.instantiateSha256(), secp256k1, require("pbkdf2-wasm").instantiatePbkdf2(bts.instantiateSha512()));
 	});
-	initFunctions.push(async () => {
+	initFunctions.push(() => {
 		return InitializeEthereumAccountVerifiable(secp256k1);
 	});
 	
