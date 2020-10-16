@@ -1,5 +1,3 @@
-import {BigNumber} from "bignumber.js"; 
-
 /** 
  * An Ethereum address, 42 chars long. Starting with "0x" followed by 40 hex values.
  * Values a to f may be uppercase to serve as a checksum feature.
@@ -67,13 +65,13 @@ export interface TransactionData{
 	static data?: CallData;
 
 	/** Gas price in wei. Will be automatically estimated if unspecified. Estimation will depend on endpoint configuration. */
-	static gasPrice?: BigNumber;
+	static gasPrice?: BigInt;
 
 	/** The maximum amount of gas to allocate to this transaction. Will be automatically estimated if unspecified. */
 	static gasLimit?: number;
 
 	/** Amount of ETH to transfer in wei. Defaults to 0 if unspecified. */
-	static value?: BigNumber
+	static value?: BigInt
 }
 
 type EthereumMessageSignatureRecoveryID = 27 | 28 | 29 | 30;
@@ -120,7 +118,7 @@ export class EthereumAccount {
 	 * 
 	 * @param blockNumber check historical balance. Defaults to current balance
 	*/
-	balance(blockNumber?: number): Promise<BigNumber>;
+	balance(blockNumber?: number): Promise<BigInt>;
 
 	/** You probably want an `EthereumAccountSignable` instead */
 	sendTransaction(tx: TransactionData): Promise<TransactionHash>;
@@ -138,7 +136,7 @@ export class EthereumAccount {
 	setSignerFor(contract: EthereumContract): void;
 
 	/** You probably want an `EthereumAccountSignable` instead */
-	transfer(recipient: AddressString | EthereumAccount | EthereumContract, amount: BigNumber, gasPrice?: BigNumber, gasLimit?: number, nonce?: number): Promise<TransactionHash>;
+	transfer(recipient: AddressString | EthereumAccount | EthereumContract, amount: BigInt, gasPrice?: BigInt, gasLimit?: number, nonce?: number): Promise<TransactionHash>;
 
 	/**
 	 * This function can only be used if `arc-web3-signable-accounts` is installed.
@@ -228,7 +226,7 @@ export class EthereumAccountSignable extends EthereumAccount {
 	 * @param gasLimit The maximum amount of gas to allocate to this transaction. Will be automatically estimated if unspecified.
 	 * @param nonce Transactions in ethereum are performed serially. This tranasction will not be processed until one with a lower nonce has been confirmed. Will be automatically estimated if unspecified.
 	 */
-	transfer(recipient: AddressString | EthereumAccount | EthereumContract, amount: BigNumber, gasPrice?: BigNumber, gasLimit?: number, nonce?: number): Promise<TransactionHash>;
+	transfer(recipient: AddressString | EthereumAccount | EthereumContract, amount: BigInt, gasPrice?: BigInt, gasLimit?: number, nonce?: number): Promise<TransactionHash>;
 }
 
 /** An event which occured on the Ethereum network */
@@ -614,4 +612,3 @@ export namespace util {
 
 	function toChecksumAddress(address: any, internal: any): any;
 }
-

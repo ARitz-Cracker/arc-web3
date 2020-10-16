@@ -1,3 +1,6 @@
+if(typeof Buffer === "undefined"){
+	require("buffer-lite");
+}
 const {EthereumAccount, InitializeEthereumAccountVerifiable} = require("./lib/account.js");
 const {EthereumContractFunction, EthereumContractMultiFunction, EthereumContract, EthereumContractResult} = require("./lib/smartContract.js");
 const {Web3Connection} = require("./lib/web3Connection.js");
@@ -5,7 +8,6 @@ const encodeABI = require("./lib/ABIDecoder.js").decode;
 const decodeABI = require("./lib/ABIEncoder.js").encode;
 const {toChecksumAddress, isValidAddress} = require("./lib/ethAddressChecksum");
 const {Web3ConnectionError, Web3APIError, EthereumContractRevertError, EthereumABIParseError} = require("./lib/errors.js");
-const BigNumber = require("./lib/bignumber.js");
 const {InitializeKeccak, Keccak, keccak224, keccak256, keccak384, keccak512} = require("keccak-wasm");
 const util = {
 	encodeABI,
@@ -22,7 +24,6 @@ let initFunctions = [() => {
 }];
 module.exports = {
 	util,
-	BigNumber,
 	EthereumAccount,
 	Web3ConnectionError,
 	Web3APIError,
@@ -43,7 +44,7 @@ try{
 	module.exports.rlp = rlp;
 	module.exports.bip39 = bip39;
 	module.exports.HDKey = HDKey;
-	const bts = require("bitcoin-ts");
+	const bts = require("@aritz-cracker/cryptowasm");
 	const secp256k1 = bts.instantiateSecp256k1();
 	initFunctions.push(() => {
 		// Oh god look how ugly this is.
@@ -72,7 +73,7 @@ if (!signableAccountsInstalled){
 		const {EthereumAccountSignable, InitializeEthereumAccountSignable, rlp} = require("arc-web3-signable-accounts");
 		module.exports.EthereumAccountSignable = EthereumAccountSignable;
 		module.exports.util.rlp = rlp;
-		const secp256k1 = require("bitcoin-ts").instantiateSecp256k1();
+		const secp256k1 = require("@aritz-cracker/cryptowasm").instantiateSecp256k1();
 		initFunctions.push(async () => {
 			return InitializeEthereumAccountSignable(secp256k1);
 		});
