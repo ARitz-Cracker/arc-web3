@@ -1,5 +1,5 @@
 const {Web3ConnectionError, Web3APIError} = require("../lib/errors.js");
-const {betterCrossFetch, RESPONSE_TYPES, POST_TYPES} = require("better-cross-fetch")
+const {betterCrossFetch, RESPONSE_TYPES, POST_TYPES} = require("better-cross-fetch");
 class HTTPJSONRPCer {
 	constructor(url){
 		this._url = url;
@@ -18,7 +18,7 @@ class HTTPJSONRPCer {
 		if(typeof response !== "object"){
 			throw new Web3ConnectionError("The node isn't returning valid JSON", -32700, response);
 		}
-		if (response.error == null){
+		if(response.error == null){
 			response.result;
 		}
 		throw new Web3APIError(response.error.message, response.error.code, response.error.data);

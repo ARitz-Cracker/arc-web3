@@ -19,6 +19,7 @@
 .env.test.local
 .env.production.local
 .idea
+.directory
 
 npm-debug.log*
 yarn-debug.log*
@@ -27,3 +28,6 @@ yarn-error.log*
 # IDE
 .nyc_output
 .vscode
+
+# yOu ShOuLd cOmMiT ThIs FiLe
+package-lock.json
