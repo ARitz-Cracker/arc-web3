@@ -12,7 +12,7 @@ const dataDir = tmpdir() + sep + "geth_test_" + Date.now().toString(36);
 const chai = require("chai");
 chai.use(require("chai-as-promised"));
 const expect = chai.expect;
-const {Web3Connection, InitializeWeb3} = require("../index");
+const {Web3Connection, InitializeWeb3, EthereumAccount} = require("../index");
 describe("Web3Connection", function(){
 	/**@type {import("child_process").ChildProcessWithoutNullStreams} */
 	let childProcess;
@@ -55,8 +55,17 @@ describe("Web3Connection", function(){
 	it("outputs the correct network ID", async function(){
 		const web3 = new Web3Connection("http://127.101.116.104:8545");
 		await expect(web3.networkID()).to.eventually.equal(3825193);
+		web3.closeConnection();
 	});
-
+	it("is able to send transactions (endpoing signing)", async function(){
+		const web3 = new Web3Connection("http://127.101.116.104:8545");
+		const devAccount = new EthereumAccount(web3, (await web3.getAccounts())[0]);
+		await web3.transactionConfirmed(
+			await devAccount.transfer("0x536f6d652072616e646f6d206163636f756e7400", 1337n)
+		);
+		await expect(web3.getBalance("0x536f6d652072616e646f6d206163636f756e7400")).to.eventually.equal(1337n);
+		web3.closeConnection();
+	});
 	after(async function(){
 		this.timeout(30000);
 		if(childProcess != null){
@@ -64,7 +73,6 @@ describe("Web3Connection", function(){
 			await new Promise(resolve => {
 				childProcess.once("close", resolve);
 			});
-			console.log("Geth closed");
 		}
 	});
 });
