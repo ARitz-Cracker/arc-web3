@@ -74,5 +74,6 @@ describe("Web3Connection", function(){
 				childProcess.once("close", resolve);
 			});
 		}
+		await fs.promises.rm(dataDir, {recursive: true, force: true})
 	});
 });
