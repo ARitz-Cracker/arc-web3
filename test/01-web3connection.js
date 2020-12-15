@@ -52,10 +52,11 @@ describe("Web3Connection", function(){
 		});
 		await InitializeWeb3();
 	});
-	it("outputs the correct network ID", async function() {
+	it("outputs the correct network ID", async function(){
 		const web3 = new Web3Connection("http://127.101.116.104:8545");
 		await expect(web3.networkID()).to.eventually.equal(3825193);
 	});
+
 	after(async function(){
 		this.timeout(30000);
 		if(childProcess != null){
