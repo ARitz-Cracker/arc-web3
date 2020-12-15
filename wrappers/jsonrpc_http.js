@@ -19,7 +19,7 @@ class HTTPJSONRPCer {
 			throw new Web3ConnectionError("The node isn't returning valid JSON", -32700, response);
 		}
 		if(response.error == null){
-			response.result;
+			return response.result;
 		}
 		throw new Web3APIError(response.error.message, response.error.code, response.error.data);
 	}

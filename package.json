@@ -43,5 +43,17 @@
 			"lib",
 			"wrappers"
 		]
+	},
+	"scripts": {
+		"build": "bash scripts/build.sh",
+		"test": "mocha",
+		"test:all": "TEST_EVERYTHING=y mocha",
+		"test:cov": "nyc --check-coverage --lines 100 --functions 100 --branches 100 --statements 100 mocha",
+		"test:final": "eslint . && npm run test:cov",
+		"test:lint": "eslint .",
+		"ci:start": "npm run test:final",
+		"ci:after": "nyc report --reporter=text-lcov | coveralls",
+		"postinstall": "node ./scripts/postinstall.js",
+		"prepublishOnly": "npm run test"
 	}
 }
