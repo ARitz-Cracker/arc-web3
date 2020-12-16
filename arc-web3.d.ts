@@ -604,9 +604,9 @@ export namespace rlp {
 }
 
 export namespace util {
-	function decodeABI(args: any, abiSnippet: any, selectorHash: any): any;
+	function decodeABI(hexStr: any, abiSnippet: any): any;
 	
-	function encodeABI(hexStr: any, abiSnippet: any): any;
+	function encodeABI(args: any, abiSnippet: any, selectorHash: any): any;
 
 	function isValidAddress(address: any, lenient: any): any;
 

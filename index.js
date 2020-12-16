@@ -4,8 +4,8 @@ if(typeof Buffer === "undefined"){
 const {EthereumAccount, InitializeEthereumAccountVerifiable} = require("./lib/account.js");
 const {EthereumContractFunction, EthereumContractMultiFunction, EthereumContract, EthereumContractResult} = require("./lib/smartContract.js");
 const {Web3Connection} = require("./lib/web3Connection.js");
-const encodeABI = require("./lib/ABIDecoder.js").decode;
-const decodeABI = require("./lib/ABIEncoder.js").encode;
+const decodeABI = require("./lib/ABIDecoder.js").decode;
+const encodeABI = require("./lib/ABIEncoder.js").encode;
 const {toChecksumAddress, isValidAddress} = require("./lib/ethAddressChecksum");
 const {Web3ConnectionError, Web3APIError, EthereumContractRevertError, EthereumABIParseError} = require("./lib/errors.js");
 const {InitializeKeccak, Keccak, keccak224, keccak256, keccak384, keccak512} = require("keccak-wasm");

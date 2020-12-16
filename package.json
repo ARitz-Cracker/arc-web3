@@ -1,6 +1,6 @@
 {
 	"name": "arc-web3",
-	"version": "0.8.2",
+	"version": "0.8.3",
 	"description": "A re-imagination of the web3.js library to easily connect browsers and NodeJS to the Ethereum network with the goals of minimal overhead or boilerplate.",
 	"keywords": [
 		"ethereum",
