@@ -14,6 +14,14 @@ class EthereumProdiderRPCer {
 			if(ex.code === -32603 && typeof ex.data === "object"){
 				/* One would think metamask would simply pass along the error instead of making a new, less descriptive
 				   one, and hiding the actually useful one within it */
+				if(typeof ex.data.originalError == "object"){
+					// God damn it, if you're going to be dumb, be CONSISTANT about it
+					throw new Web3APIError(
+						ex.data.originalError.message,
+						ex.data.originalError.code,
+						ex.data.originalError.data
+					);
+				}
 				throw new Web3APIError(ex.data.message, ex.data.code, ex.data.data);
 			}else{
 				throw new Web3APIError(ex.message, ex.code, ex.data);
